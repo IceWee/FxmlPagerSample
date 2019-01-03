@@ -7,7 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Billionaire Query Service
@@ -22,9 +24,14 @@ public final class BillionaireService {
     }
 
     /**
+     * The first 5 billionaires is readonly.
+     */
+    private final List<String> READONLY_RANKS = Arrays.asList("#1", "#2", "#3", "#4", "#5");
+
+    /**
      * TOP 50 Billionaires of the world.
      */
-    private final List<Billionaire> BILLIONAIRES = Arrays.asList(
+    private final List<Billionaire> BILLIONAIRES = new ArrayList<>(Arrays.asList(
             new Billionaire("#1", "Jeff Bezos", "$112 B", 54, "Amazon", "United States"),
             new Billionaire("#2", "Bill Gates", "$90 B", 63, "Microsoft", "United States"),
             new Billionaire("#3", "Warren Buffett", "$84 B", 88, "Berkshire Hathaway", "United States"),
@@ -75,7 +82,7 @@ public final class BillionaireService {
             new Billionaire("#48", "Theo Albrecht, Jr.", "$20.2 B", 68, "Aldi, Trader Joe's", "Germany"),
             new Billionaire("#48", "Len Blavatnik", "$20.2 B", 61, "diversified", "United States"),
             new Billionaire("#50", "He Xiangjian", "$20.1 B", 76, "home appliances", "China"),
-            new Billionaire("#50", "Lui Che Woo", "$20.1 B", 89, "casinos", "Hong Kong"));
+            new Billionaire("#50", "Lui Che Woo", "$20.1 B", 89, "casinos", "Hong Kong")));
 
     private BillionaireService() {
         super();
@@ -112,6 +119,35 @@ public final class BillionaireService {
             }
             List<Billionaire> data = matches.subList(fromIndex, toIndex);
             page.setData(data);
+        }
+    }
+
+    /**
+     * check the billionaire whether is readonly
+     *
+     * @param billionaire
+     * @return
+     */
+    public boolean readonly(Billionaire billionaire) {
+        if (billionaire == null) {
+            return true;
+        }
+        return READONLY_RANKS.contains(billionaire.getRank());
+    }
+
+    /**
+     * remove
+     *
+     * @param toBeRemoved
+     */
+    public void remove(Billionaire toBeRemoved) {
+        Iterator<Billionaire> iterator = BILLIONAIRES.iterator();
+        Billionaire billionaire;
+        while (iterator.hasNext()) {
+            billionaire = iterator.next();
+            if (Objects.equals(billionaire, toBeRemoved)) {
+                iterator.remove();
+            }
         }
     }
 
